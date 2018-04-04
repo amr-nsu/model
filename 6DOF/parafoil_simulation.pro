@@ -12,12 +12,13 @@ SOURCES += main.cpp \
 HEADERS += \
     algorithm.h \
     fuselage.h \
-    def.math.h \
-    def.physic.h \
-    def.h \
-    def.model.h \
+    def/def.math.h \
+    def/def.physic.h \
+    def/def.h \
+    def/def.model.h \
     parafoil.h \
     aileron.h \
-    model.h
+    model.h \
+    consumption.h
 
 LIBS += -llapack -lblas -larmadillo

@@ -1,6 +1,23 @@
 #include "parafoil.h"
 
 using namespace arma;
+using namespace def;
+
+std::ostream& operator << (std::ostream& os, const PState& state)
+{
+    os << state.air_pressure << " "
+       << state.coef_lift << " "
+       << state.coef_drag << " "
+       << state.angle_of_attack;
+
+    return os;
+}
+
+PState Parafoil::get_state() const
+{
+    return state;
+}
+
 
 void Parafoil::update(const vec& velocity, const vec& ang_velocity)
 {
@@ -15,6 +32,14 @@ void Parafoil::update(const vec& velocity, const vec& ang_velocity)
     state.air_pressure = 0.5 * AIR_DENSITY * AREA * para_velocity_norm * para_velocity_norm;
 }
 
+vec Parafoil::get_aileron_liftforce(const vec& velocity) const
+{
+  return aileron.get_liftforce(velocity, state.air_pressure);
+}
+vec Parafoil::get_aileron_dragforce(const vec& velocity) const
+{
+    return aileron.get_dragforce(velocity, state.air_pressure);
+}
 
 void Parafoil::set_brake_angles(const vec& angles)
 {
@@ -24,6 +49,20 @@ void Parafoil::set_brake_angles(const vec& angles)
 vec Parafoil::get_brake_angles() const
 {
     return aileron();
+}
+
+vec Parafoil::get_aerodragforce(const vec& velocity, const vec& ang_velocity) const
+{
+    vec para_velocity = get_linear_velocity(velocity, ang_velocity, TRANS_PARA_BODY_VECTOR);
+
+    return get_dragforce_direction(para_velocity)* state.coef_drag * state.air_pressure;
+}
+
+vec Parafoil::get_aeroliftforce(const vec& velocity, const vec& ang_velocity) const
+{
+    vec para_velocity = get_linear_velocity(velocity, ang_velocity, TRANS_PARA_BODY_VECTOR);
+
+    return get_liftforce_direction(para_velocity)* state.coef_lift * state.air_pressure;
 }
 
 vec Parafoil::get_aeroforce(const vec& velocity, const vec& ang_velocity) const
@@ -93,4 +132,14 @@ vec Parafoil::get_force(const vec& velocity, const vec& ang_velocity)
     update(velocity, ang_velocity);
 
     return get_aeroforce(velocity, ang_velocity) + aileron.get_force(velocity, state.air_pressure) + get_apperent_mass_force();
+}
+
+mat Parafoil::get_mass() const
+{
+   return eye(3,3) * MASS;
+}
+
+mat Parafoil::get_inertia() const
+{
+   return INERTIA;
 }

@@ -1,6 +1,24 @@
 #include "fuselage.h"
 
 using namespace arma;
+using namespace def;
+
+std::ostream& operator << (std::ostream& os, const FState& state)
+{
+    os << state.thrust;
+
+    return os;
+}
+
+void Fuselage::update()
+{
+    state.thrust = thrust;
+}
+
+FState Fuselage::get_state() const
+{
+    return state;
+}
 
 void Fuselage::set_thrust(double thrust)
 {
@@ -41,13 +59,15 @@ vec Fuselage::get_aeroforce_momentum(const vec& velocity, const vec& ang_velocit
     return skew_matrix(TRANS_FUSE_BODY_VECTOR) * get_aeroforce(velocity, ang_velocity);
 }
 
-vec Fuselage::get_force_momentum(const vec& velocity, const vec& ang_velocity) const
+vec Fuselage::get_force_momentum(const vec& velocity, const vec& ang_velocity)
 {
     return  get_aeroforce_momentum(velocity, ang_velocity) + get_thrust_momentum();
 }
 
-vec Fuselage::get_force(const vec& velocity, const vec& ang_velocity, const vec& euler_angles) const
+vec Fuselage::get_force(const vec& velocity, const vec& ang_velocity, const vec& euler_angles)
 {
+    update();
+
     return get_weight_force(euler_angles) + get_aeroforce(velocity, ang_velocity) + get_thrust();
 }
 
