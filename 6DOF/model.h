@@ -35,6 +35,9 @@ class Model
     arma::vec consecutive_linear_velocity();
     arma::vec consecutive_coordinates() const;
 
+    //see diploma
+    arma::vec calculate_F(const arma::vec& velocity, const arma::vec& ang_velocity, const arma::vec& euler_angles);
+
     typedef void (*Algorithm)(Fuselage& fuselage, Parafoil& parafoil, State& state);
 
     Algorithm algorithm = nullptr;

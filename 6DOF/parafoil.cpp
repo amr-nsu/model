@@ -32,13 +32,14 @@ void Parafoil::update(const vec& velocity, const vec& ang_velocity)
     state.air_pressure = 0.5 * AIR_DENSITY * AREA * para_velocity_norm * para_velocity_norm;
 }
 
-vec Parafoil::get_aileron_liftforce(const vec& velocity) const
-{
-  return aileron.get_liftforce(velocity, state.air_pressure);
-}
 vec Parafoil::get_aileron_dragforce(const vec& velocity) const
 {
     return aileron.get_dragforce(velocity, state.air_pressure);
+}
+
+vec Parafoil::get_aileron_liftforce(const vec& velocity) const
+{
+    return aileron.get_liftforce(velocity, state.air_pressure);
 }
 
 void Parafoil::set_brake_angles(const vec& angles)

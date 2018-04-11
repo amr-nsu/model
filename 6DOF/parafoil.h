@@ -51,8 +51,6 @@ class Parafoil
 
 public:
 
-
-
     Parafoil() { }
 
     void set_brake_angles(const arma::vec& angles);
@@ -62,6 +60,8 @@ public:
 
     arma::mat get_inertia() const;
     arma::mat get_mass() const;
+    arma::mat get_apperant_mass_inertia() const;
+    arma::mat get_apperant_mass() const;
 
     arma::vec get_aileron_liftforce(const arma::vec& velocity) const;
     arma::vec get_aileron_dragforce(const arma::vec& velocity) const;
@@ -78,7 +78,6 @@ public:
     arma::vec get_apperent_mass_additional_momentum() const;
     arma::vec get_aerodynamic_momentum(const arma::vec& velocity, const arma::vec& ang_velocity, const arma::vec& euler_angles) const;
     arma::vec get_force_momentum(const arma::vec& velocity, const arma::vec& ang_velocity, const arma::vec& euler_angles);
-
 
 };
 

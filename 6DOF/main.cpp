@@ -15,7 +15,7 @@ int main()
     model(con::linear_thrust_depended_consuption);
 
 
-    ofstream file("data_m");
+    ofstream file("data_test_0");
     //ofstream file("data_k");
 
     model[alg::algorithm_keeping_heigth];
@@ -26,9 +26,9 @@ int main()
 
 
 
-    model[alg::algorithm_minization_fuel_consumption];
+    //model[alg::algorithm_minization_fuel_consumption];
 
-    //model[alg::algorithm_keeping_heigth];
+    model[alg::algorithm_keeping_heigth];
 
 
     model(file, 250);

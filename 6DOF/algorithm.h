@@ -97,18 +97,8 @@ void algorithm_minization_fuel_consumption(Fuselage& fuselage, Parafoil& parafoi
 
 }
 
-
-
 //    public void evaluateWithSearch(double _time, double height)
 //    {
-//        try
-//        {
-
-//            File logger = new File("log" + version);
-//            PrintWriter ilogger = new PrintWriter(logger);
-
-
-
 //            double amplitude = 0.1;
 //            double OMEGA = 2.*PI*10;
 //            double T_f = 1.5;
@@ -138,14 +128,12 @@ void algorithm_minization_fuel_consumption(Fuselage& fuselage, Parafoil& parafoi
 //                if(thrust > 15) thrust = 15;
 //                setThrustBody(thrust);
 
-
 //                state.update(parafoil, fuselage);
 
 //                alpha = parafoil.getState().attackAngle;//thrust;
 
 //                //double lift = parafoil.getAeroLiftForce(state).normF();
 //                //double drag = parafoil.getAeroDragForce(state).normF();
-
 
 //                double lift = parafoil.getAeroLiftForce(state).normF() + parafoil.getControlBrakeLiftForce(state).normF();
 //                double drag = (parafoil.getAeroDragForce(state).normF()+ parafoil.getControlBrakeDragForce(state).normF());
@@ -155,9 +143,7 @@ void algorithm_minization_fuel_consumption(Fuselage& fuselage, Parafoil& parafoi
 //                //double lift = parafoil.getAeroLiftForce(state).plus(parafoil.getControlBrakeLiftForce(state)).normF();
 //                //double drag = (parafoil.getAeroDragForce(state).plus(parafoil.getControlBrakeDragForce(state)).plus(fuselage.getAeroForce(state)).normF());
 
-
 //                double n_output = lift/drag;
-
 
 //                //double n_output = (0.83*alpha + 0.28) / (1.*alpha * alpha - 0.2* alpha + 0.12);
 
@@ -167,30 +153,14 @@ void algorithm_minization_fuel_consumption(Fuselage& fuselage, Parafoil& parafoi
 
 //                base += 200. * mean  * 0.01;
 
-
-//                log();
-//                ilogger.println(state.timeStamp + " " + base);
-//                ilogger.flush();
-//                if(getCoords().get(2,0) >=0 )
-//                    return;
 //            }
 
-//        }
-//        catch (Exception e)
-//        {
-//            e.printStackTrace();
 //        }
 //    }
 
 
 //    public void evaluateWithSearchEngine(double _time, double height)
 //    {
-//        try
-//        {
-
-//            File logger = new File("log" + version);
-//            PrintWriter ilogger = new PrintWriter(logger);
-
 //            double amplitude = 0.007;
 //            double OMEGA = 2.*PI*10;
 //            double T_f = 1.5;
@@ -220,7 +190,6 @@ void algorithm_minization_fuel_consumption(Fuselage& fuselage, Parafoil& parafoi
 
 //                double coef = 2.1;
 
-
 //                intb += ((height+state.coordinates.get(2,0)) - intb)*0.75;
 
 //                double maxAngle = PI/2;
@@ -243,7 +212,6 @@ void algorithm_minization_fuel_consumption(Fuselage& fuselage, Parafoil& parafoi
 //                //double lift = parafoil.getAeroLiftForce(state).normF();
 //                //double drag = parafoil.getAeroDragForce(state).normF();
 
-
 //                double lift = parafoil.getAeroLiftForce(state).normF() + parafoil.getControlBrakeLiftForce(state).normF();
 //                double drag = (parafoil.getAeroDragForce(state).normF()+ parafoil.getControlBrakeDragForce(state).normF());
 
@@ -252,9 +220,7 @@ void algorithm_minization_fuel_consumption(Fuselage& fuselage, Parafoil& parafoi
 //                //double lift = parafoil.getAeroLiftForce(state).plus(parafoil.getControlBrakeLiftForce(state)).normF();
 //                //double drag = (parafoil.getAeroDragForce(state).plus(parafoil.getControlBrakeDragForce(state)).plus(fuselage.getAeroForce(state)).normF());
 
-
 //                double n_output = lift/drag;
-
 
 //                //double n_output = (0.83*alpha + 0.28) / (1.*alpha * alpha - 0.2* alpha + 0.12);
 
@@ -263,24 +229,9 @@ void algorithm_minization_fuel_consumption(Fuselage& fuselage, Parafoil& parafoi
 //                mean += 1./T_f * (n_output * amplitude * sin(OMEGA * time) - mean) * 0.01;
 
 //                base += 200. * mean  * 0.01;
-
-
-//                log();
-//                ilogger.println(state.timeStamp + " " + base);
-//                ilogger.flush();
-//                if(getCoords().get(2,0) >=0 )
-//                    return;
-//            }
-
-//        }
-//        catch (Exception e)
-//        {
-//            e.printStackTrace();
 //        }
 //    }
 
-
-
-};
+}
 
 #endif // ALGORITHM_H
