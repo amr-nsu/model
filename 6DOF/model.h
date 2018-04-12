@@ -8,7 +8,7 @@
 struct State
 {
     double fuel = 10;
-    double time_step = 0.01;
+    double time_step = 0.1;
     double timestamp = 0.0;
     arma::vec angular_vel = arma::zeros(3,1);
     arma::vec euler_angles = arma::zeros(3,1);
@@ -22,7 +22,6 @@ std::ostream& operator << (std::ostream& os, const State& state);
 
 class Model
 {
-
     State state;
 
     Parafoil parafoil;
@@ -30,13 +29,12 @@ class Model
 
     void update();
 
-    arma::vec consecutive_angular_velocity();
-    arma::vec consecutive_euler_angles() const;
-    arma::vec consecutive_linear_velocity();
-    arma::vec consecutive_coordinates() const;
+    arma::vec eulerMethod(const arma::vec& n);
+    arma::vec rungeKuttaMethod(const arma::vec& n);
+
 
     //see diploma
-    arma::vec calculate_F(const arma::vec& velocity, const arma::vec& ang_velocity, const arma::vec& euler_angles);
+    arma::vec calculate_F(const arma::vec& n);
 
     typedef void (*Algorithm)(Fuselage& fuselage, Parafoil& parafoil, State& state);
 

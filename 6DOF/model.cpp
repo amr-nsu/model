@@ -60,37 +60,49 @@ void Model::update()
     a.rows(6,8) = state.coordinates;
     a.rows(9,11) = state.euler_angles;
 
-    vec n = a+ state.time_step * calculate_F(state.linear_velocity, state.angular_vel, state.euler_angles);
+    vec n = eulerMethod(a);
 
-    tmp.angular_vel = n.rows(3,5);//consecutive_angular_velocity();
-    tmp.euler_angles = n.rows(9,11);//consecutive_euler_angles();
-    tmp.linear_velocity = n.rows(0,2);//consecutive_linear_velocity();
-    tmp.coordinates = n.rows(6,8);//consecutive_coordinates();
+    tmp.angular_vel = n.rows(3,5);
+    tmp.euler_angles = n.rows(9,11);
+    tmp.linear_velocity = n.rows(0,2);
+    tmp.coordinates = n.rows(6,8);
     tmp.timestamp = state.timestamp + state.time_step;
 
     state = tmp;
 }
 
-vec Model::consecutive_euler_angles() const
+vec Model::eulerMethod(const vec& n)
 {
-    return def::angular_velocity_rotational_matrix(state.euler_angles) * state.angular_vel * state.time_step + state.euler_angles;
+    return n + state.time_step * calculate_F(n);
 }
 
-vec Model::consecutive_coordinates() const
+vec Model::rungeKuttaMethod(const vec& n)
 {
-    return state.coordinates + def::coord_rotational_matrix(state.euler_angles)*state.linear_velocity * state.time_step;
+    double h = state.time_step;
+    vec k1 = h * calculate_F(n);
+    vec k2 = h * calculate_F(n+k1*0.5);
+    vec k3 = h * calculate_F(n+k2*0.5);
+    vec k4 = h * calculate_F(n+k3);
+
+    return n + (k1 + 2*k2 + 2*k3 + k4)/6;
 }
 
-arma::vec Model::calculate_F(const arma::vec& velocity, const arma::vec& ang_velocity, const arma::vec& euler_angles)
+
+vec Model::calculate_F(const vec& n)
 {
-    arma::mat A = arma::zeros(6,6);
-    arma::vec M = arma::zeros(6,1);
-    arma::vec H;
-    arma::vec L;
+    vec velocity = n.rows(0,2);
+    vec ang_velocity = n.rows(3,5);
+    vec euler_angles = n.rows(9,11);
 
-    arma::mat mass = fuselage.get_mass()+parafoil.get_mass();
 
-    arma::mat inertia = fuselage.get_inertia()+parafoil.get_inertia();
+    mat A = zeros(6,6);
+    vec M = zeros(6,1);
+    vec H;
+    vec L;
+
+    mat mass = fuselage.get_mass()+parafoil.get_mass();
+
+    mat inertia = fuselage.get_inertia()+parafoil.get_inertia();
 
     H = fuselage.get_force(velocity, ang_velocity, euler_angles)
         + parafoil.get_force(velocity, ang_velocity)
@@ -106,7 +118,7 @@ arma::vec Model::calculate_F(const arma::vec& velocity, const arma::vec& ang_vel
     A.rows(0, 2).cols(0,2) = mass;
     A.rows(3, 5).cols(3,5) = inertia;
 
-    arma::vec F = arma::zeros(12,1);
+    vec F = zeros(12,1);
 
     F.rows(0, 5) = inv(A)*M;
     F.rows(6,8) = def::coord_rotational_matrix(euler_angles) * velocity;
