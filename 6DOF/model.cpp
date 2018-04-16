@@ -37,7 +37,10 @@ void Model::operator() (std::ostream& os, double time)
     for(double t = 0; (t < time) & (state.coordinates(2) < 0); t+=state.time_step)
     {
         update();
-        algorithm(fuselage, parafoil, state);
+        State tmp(state);
+        tmp.angular_vel += randn(3,1) * 1e-4;
+        tmp.coordinates += randn(3,1) * 1e-2;
+        algorithm(fuselage, parafoil, tmp);
         os << state << " " << parafoil.get_state() << " " << fuselage.get_state() << std::endl;
     }
 }
@@ -60,7 +63,8 @@ void Model::update()
     a.rows(6,8) = state.coordinates;
     a.rows(9,11) = state.euler_angles;
 
-    vec n = eulerMethod(a);
+    vec n = rungeKuttaMethod(a);
+    //vec n = eulerMethod(a);
 
     tmp.angular_vel = n.rows(3,5);
     tmp.euler_angles = n.rows(9,11);
@@ -87,12 +91,20 @@ vec Model::rungeKuttaMethod(const vec& n)
     return n + (k1 + 2*k2 + 2*k3 + k4)/6;
 }
 
-
 vec Model::calculate_F(const vec& n)
 {
     vec velocity = n.rows(0,2);
     vec ang_velocity = n.rows(3,5);
+    vec coordinates = n.rows(6,8);
     vec euler_angles = n.rows(9,11);
+
+//    State tmp(state);
+//    tmp.angular_vel = ang_velocity;
+//    tmp.coordinates = coordinates;
+//    tmp.linear_velocity = velocity;
+//    tmp.euler_angles = euler_angles;
+//    if(tmp.fuel > 0)
+//        algorithm(fuselage, parafoil, tmp);
 
 
     mat A = zeros(6,6);

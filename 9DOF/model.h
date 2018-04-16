@@ -7,12 +7,15 @@
 
 struct State
 {
-    double fuel = 10;
+    double fuel = 40;
     double time_step = 0.01;
     double timestamp = 0.0;
-    arma::vec angular_vel = arma::zeros(3,1);
-    arma::vec euler_angles = arma::zeros(3,1);
+    arma::vec angular_vel_parafoil = arma::zeros(3,1);
+    arma::vec angular_vel_fuselage = arma::zeros(3,1);
+    arma::vec euler_angles_parafoil = arma::zeros(3,1);
+    arma::vec euler_angles_fuselage = arma::zeros(3,1);
     arma::vec linear_velocity = arma::zeros(3,1);
+    arma::vec react_force = arma::zeros(3,1);
     arma::vec coordinates = arma::zeros(3,1);
     arma::vec wind_force_geog = arma::zeros(3,1);
 };

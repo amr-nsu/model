@@ -72,16 +72,13 @@ void algorithm_minization_fuel_consumption(Fuselage& fuselage, Parafoil& parafoi
     //double lift = parafoil.get_state().coef_lift;
     //double drag = parafoil.get_state().coef_drag;
 
-    arma::vec body_linear_velocity = inv(def::coord_rotational_matrix(state.euler_angles)) * state.linear_velocity;
-
-
     double lift = norm(
-                parafoil.get_aeroliftforce(body_linear_velocity, state.angular_vel)
-                + parafoil.get_aileron_liftforce(body_linear_velocity)
+                parafoil.get_aeroliftforce(state.linear_velocity, state.angular_vel)
+                + parafoil.get_aileron_liftforce(state.linear_velocity, state.angular_vel)
                 );
     double drag = norm(
-                parafoil.get_aerodragforce(body_linear_velocity, state.angular_vel)
-                + parafoil.get_aileron_dragforce(body_linear_velocity)
+                parafoil.get_aerodragforce(state.linear_velocity, state.angular_vel)
+                + parafoil.get_aileron_dragforce(state.linear_velocity, state.angular_vel)
                 );
 
     double n_output = 0;// = lift/drag ? drag != 0 : 0;

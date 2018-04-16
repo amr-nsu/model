@@ -63,8 +63,8 @@ public:
     arma::mat get_apperant_mass_inertia() const;
     arma::mat get_apperant_mass() const;
 
-    arma::vec get_aileron_liftforce(const arma::vec& velocity) const;
-    arma::vec get_aileron_dragforce(const arma::vec& velocity) const;
+    arma::vec get_aileron_liftforce(const arma::vec& velocity, const arma::vec& ang_velocity) const;
+    arma::vec get_aileron_dragforce(const arma::vec& velocity, const arma::vec& ang_velocity) const;
 
     arma::vec get_aeroliftforce(const arma::vec& velocity, const arma::vec& ang_velocity) const;
     arma::vec get_aerodragforce(const arma::vec& velocity, const arma::vec& ang_velocity) const;

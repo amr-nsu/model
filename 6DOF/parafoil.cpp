@@ -32,14 +32,18 @@ void Parafoil::update(const vec& velocity, const vec& ang_velocity)
     state.air_pressure = 0.5 * AIR_DENSITY * AREA * para_velocity_norm * para_velocity_norm;
 }
 
-vec Parafoil::get_aileron_dragforce(const vec& velocity) const
+vec Parafoil::get_aileron_dragforce(const vec& velocity, const vec& ang_velocity) const
 {
-    return aileron.get_dragforce(velocity, state.air_pressure);
+    vec para_velocity = get_linear_velocity(velocity, ang_velocity, TRANS_PARA_BODY_VECTOR);
+
+    return aileron.get_dragforce(para_velocity, state.air_pressure);
 }
 
-vec Parafoil::get_aileron_liftforce(const vec& velocity) const
+vec Parafoil::get_aileron_liftforce(const vec& velocity, const vec& ang_velocity) const
 {
-    return aileron.get_liftforce(velocity, state.air_pressure);
+    vec para_velocity = get_linear_velocity(velocity, ang_velocity, TRANS_PARA_BODY_VECTOR);
+
+    return aileron.get_liftforce(para_velocity, state.air_pressure);
 }
 
 void Parafoil::set_brake_angles(const vec& angles)
@@ -132,7 +136,9 @@ vec Parafoil::get_force(const vec& velocity, const vec& ang_velocity)
 {
     update(velocity, ang_velocity);
 
-    return get_aeroforce(velocity, ang_velocity) + aileron.get_force(velocity, state.air_pressure) + get_apperent_mass_force();
+    vec para_velocity = get_linear_velocity(velocity, ang_velocity, TRANS_PARA_BODY_VECTOR);
+
+    return get_aeroforce(velocity, ang_velocity) + aileron.get_force(para_velocity, state.air_pressure) + get_apperent_mass_force();
 }
 
 mat Parafoil::get_mass() const
