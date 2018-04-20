@@ -34,14 +34,14 @@ std::ostream& operator << (std::ostream& os, const State& state)
 
 void Model::operator() (std::ostream& os, double time)
 {
-    os << "1. time" << " " << "2. wp_x" << " " << "3. wp_y" << " " << "4. wp_z"
-       << "5. ap_x" << " " << "6. ap_y" << " " << "7. ap_z"
-       << "8. wb_x" << " " << "9. wb_y" << " " << "10. wb_z"
-       << "11. ab_x" << " " << "12. ab_y" << " " << "13. ab_z"
-       << "14. v_x" << " " << "15. v_y" << " " << "16. v_z" << " "
-       << "17. x" << " " << "18. y" << " " << "19. z" << " " << "20. wind_x" << " " << "21. wind_y" << " "
-       << "22. wind_z" << " " << "23. fuel" << " " << "24. air_pressure" << " " << "25.coef_lift" << " "
-       << "26. coef_drag" << " " << "27. angle_of_attack" << " " << "28. delta_s" << " " << "29. delta_a" << " " << "thrust" << std::endl;
+//    os << "1. time" << " " << "2. wp_x" << " " << "3. wp_y" << " " << "4. wp_z"
+//       << "5. ap_x" << " " << "6. ap_y" << " " << "7. ap_z"
+//       << "8. wb_x" << " " << "9. wb_y" << " " << "10. wb_z"
+//       << "11. ab_x" << " " << "12. ab_y" << " " << "13. ab_z"
+//       << "14. v_x" << " " << "15. v_y" << " " << "16. v_z" << " "
+//       << "17. x" << " " << "18. y" << " " << "19. z" << " " << "20. wind_x" << " " << "21. wind_y" << " "
+//       << "22. wind_z" << " " << "23. fuel" << " " << "24. air_pressure" << " " << "25.coef_lift" << " "
+//       << "26. coef_drag" << " " << "27. angle_of_attack" << " " << "28. delta_s" << " " << "29. delta_a" << " " << "thrust" << std::endl;
 
     for(double t = 0; (t < time) & (state.coordinates(2) < 0); t+=state.time_step)
     {

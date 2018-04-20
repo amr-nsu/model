@@ -44,9 +44,6 @@ void algorithm_keeping_heigth(Fuselage& fuselage, Parafoil& parafoil, State& sta
 
 double base = 0;
 double mean = 0.;
-double test_mean = 0;
-
-std::ofstream file("graph");
 
 void algorithm_minization_fuel_consumption(Fuselage& fuselage, Parafoil& parafoil, State& state)
 {
@@ -70,25 +67,13 @@ void algorithm_minization_fuel_consumption(Fuselage& fuselage, Parafoil& parafoi
 
     parafoil.set_brake_angles(arma::colvec({ailerons, ailerons}));
 
-    double lift = parafoil.get_state().coef_lift;
-    double drag = parafoil.get_state().coef_drag;
+    double lift = parafoil.get_state().coef_lift - 0.21 * parafoil.get_state().delta_s;
+    double drag = parafoil.get_state().coef_drag  - 0.3 * parafoil.get_state().delta_s;
 
-
-//    double lift = norm(
-//                parafoil.get_aeroliftforce(state.linear_velocity,state.angular_vel_parafoil, state.euler_angles_parafoil)
-//                + parafoil.get_aileron_liftforce(state.linear_velocity,state.angular_vel_parafoil, state.euler_angles_parafoil)
-//                );
-//    double drag = norm(
-//                parafoil.get_aerodragforce(state.linear_velocity,state.angular_vel_parafoil, state.euler_angles_parafoil)
-//                + parafoil.get_aileron_dragforce(state.linear_velocity,state.angular_vel_parafoil, state.euler_angles_parafoil)
-//                //+ fuselage.get_aeroforce(state.linear_velocity,state.angular_vel_fuselage, state.euler_angles_fuselage)
-//                );
 
     double n_output = 0;
     if(drag != 0)
         n_output = lift/drag;
-
-    double signal_shifted = amplitude * sin(M_PI * freqency * (state.timestamp-state.time_step));
 
     double T_f = 0.9;
     mean += state.time_step/T_f * (n_output * signal - mean);
@@ -100,49 +85,6 @@ void algorithm_minization_fuel_consumption(Fuselage& fuselage, Parafoil& parafoi
 
 }
 
-double mean_ = 0;
-
-void algorithm_minization_fuel_consumption_modified(Fuselage& fuselage, Parafoil& parafoil, State& state)
-{
-    algorithm_keeping_heigth(fuselage, parafoil, state);
-
-    const double amplitude = 0.005;
-    const double freqency =  20;
-    double test_signal = amplitude * sin(M_PI * freqency * state.timestamp);
-
-    double ailerons = base + test_signal;
-
-    if(0 > ailerons) ailerons = 0;
-    if(ailerons > M_PI/4) ailerons = M_PI/4;
-
-    parafoil.set_brake_angles(arma::colvec({ailerons, ailerons}));
-
-    double lift = norm(
-                parafoil.get_aeroliftforce(state.linear_velocity,state.angular_vel_parafoil, state.euler_angles_parafoil)
-                + parafoil.get_aileron_liftforce(state.linear_velocity,state.angular_vel_parafoil, state.euler_angles_parafoil)
-                );
-    double drag = norm(
-                parafoil.get_aerodragforce(state.linear_velocity,state.angular_vel_parafoil, state.euler_angles_parafoil)
-                + parafoil.get_aileron_dragforce(state.linear_velocity,state.angular_vel_parafoil, state.euler_angles_parafoil)
-                //+ fuselage.get_aeroforce(state.linear_velocity,state.angular_vel_fuselage, state.euler_angles_fuselage)
-                );
-
-    double n_output = 0;
-    if(drag != 0)
-        n_output = lift/drag;
-
-    file << base << " " << mean_ << " " << test_mean << std::endl;
-
-    double tmp = n_output * test_signal;
-
-    double nu = 50;
-
-    mean_ = tmp/nu + (nu-1)/nu*mean_;
-
-    double coef = 200;
-
-    base += coef * mean_  * state.time_step;
-}
 
 }
 

@@ -7,7 +7,7 @@
 
 struct State
 {
-    double fuel = 40;
+    double fuel = 15;
     double time_step = 0.01;
     double timestamp = 0.0;
     arma::vec angular_vel_parafoil = arma::zeros(3,1);

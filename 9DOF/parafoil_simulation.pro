@@ -6,7 +6,6 @@ CONFIG -= qt
 SOURCES += main.cpp \
     fuselage.cpp \
     parafoil.cpp \
-    aileron.cpp \
     model.cpp
 
 HEADERS += \
@@ -17,7 +16,6 @@ HEADERS += \
     def/def.h \
     def/def.model.h \
     parafoil.h \
-    aileron.h \
     model.h \
     consumption.h
 

@@ -25,40 +25,28 @@ void Parafoil::update(const vec& velocity, const vec& ang_velocity, const vec& e
     vec para_velocity = get_linear_velocity(velocity, ang_velocity, TRANS_PARA_BODY_VECTOR, euler_angles);
     double para_velocity_norm = norm(para_velocity);
 
+    state.delta_a = get_control()(0);
+    state.delta_s = get_control()(1);
+
     state.angle_of_attack = get_angle_of_attack(para_velocity);
-    state.coef_lift = COEF_LIFT_BASE + COEF_LIFT_ALPHA * state.angle_of_attack;
+    state.coef_lift = COEF_LIFT_BASE + COEF_LIFT_ALPHA * state.angle_of_attack + state.delta_s *COEF_LIFT_SYMMETRIC
+            + state.delta_a * COEF_LIFT_ASYMMETRIC;
     state.coef_drag = COEF_DRAG_BASE + COEF_DRAG_ALPHA * state.angle_of_attack
-            + COEF_DRAG_ALPHA_2 * state.angle_of_attack * state.angle_of_attack;
+            + COEF_DRAG_ALPHA_2 * state.angle_of_attack * state.angle_of_attack
+            + state.delta_s*COEF_DRAG_SYMMETRIC + state.delta_a*COEF_DRAG_ASYMMETRIC;
 
     state.air_pressure = 0.5 * AIR_DENSITY * AREA * para_velocity_norm * para_velocity_norm;
 
-    state.delta_a = aileron.get_control()(0);
-    state.delta_s = aileron.get_control()(1);
-
-}
-
-vec Parafoil::get_aileron_dragforce(const vec& velocity, const vec& ang_velocity, const vec& euler_angles) const
-{
-    vec para_velocity = get_linear_velocity(velocity, ang_velocity, TRANS_PARA_BODY_VECTOR, euler_angles);
-
-    return aileron.get_dragforce(para_velocity, state.air_pressure);
-}
-
-vec Parafoil::get_aileron_liftforce(const vec& velocity, const vec& ang_velocity, const vec& euler_angles) const
-{
-    vec para_velocity = get_linear_velocity(velocity, ang_velocity, TRANS_PARA_BODY_VECTOR, euler_angles);
-
-    return aileron.get_liftforce(velocity, state.air_pressure);
 }
 
 void Parafoil::set_brake_angles(const vec& angles)
 {
-    aileron(angles);
+    brake_angles = angles;
 }
 
 vec Parafoil::get_brake_angles() const
 {
-    return aileron();
+    return brake_angles;
 }
 
 vec Parafoil::get_aerodragforce(const vec& velocity, const vec& ang_velocity, const vec& euler_angles) const
@@ -122,7 +110,7 @@ vec Parafoil::get_force_momentum(const vec& velocity, const vec& ang_velocity, c
     update(velocity, ang_velocity, euler_angles);
 
     return get_aerodynamic_momentum(velocity, ang_velocity, euler_angles)
-            + aileron.get_force_momentum(state.air_pressure,SPAN/FLAP_WIDTH)
+            + get_aileron_force_momentum()
             + get_apperent_mass_momentum(velocity, ang_velocity, euler_angles);
 }
 
@@ -133,7 +121,7 @@ vec Parafoil::get_force(const vec& velocity, const vec& ang_velocity, const vec&
     vec para_velocity = get_linear_velocity(velocity, ang_velocity, TRANS_PARA_BODY_VECTOR, euler_angles);
 
     return get_aeroliftforce(velocity, ang_velocity, euler_angles) + get_aerodragforce(velocity, ang_velocity, euler_angles)
-            + aileron.get_force(para_velocity, state.air_pressure) + get_apperent_mass_force(velocity, ang_velocity, euler_angles)
+            + get_apperent_mass_force(velocity, ang_velocity, euler_angles)
             + get_weight_force(euler_angles);
 }
 
@@ -195,4 +183,24 @@ mat Parafoil::get_inertia() const
 vec Parafoil::get_displacement()const
 {
     return TRANS_PARA_BODY_VECTOR;
+}
+
+vec Parafoil::get_aileron_force_momentum() const
+{
+    vec delta = get_control();
+
+    vec tmp = zeros(3,1);
+    tmp(0) = C_l_delta_a * SPAN/FLAP_WIDTH;
+    tmp(2) = C_n_delta_a * SPAN/FLAP_WIDTH;
+    return tmp * state.air_pressure * delta(0);
+}
+
+vec Parafoil::get_control() const
+{
+    vec tmp(2);
+
+    tmp(0) = brake_angles(0) - brake_angles(1);
+    tmp(1) = std::min(brake_angles(0), brake_angles(1));
+
+    return std::move(tmp);
 }

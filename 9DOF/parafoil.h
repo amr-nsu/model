@@ -2,7 +2,6 @@
 #define PARAFOIL_H
 
 #include "def/def.h"
-#include "aileron.h"
 #include <math.h>
 
 struct PState
@@ -53,18 +52,26 @@ class Parafoil
                 CHORD, SPAN, WIDTH, def::AIR_DENSITY, arma::zeros(3,1)
                 );
 
+    const double COEF_LIFT_ASYMMETRIC = 0.0001; //denoted by C_L_delta_a
+    const double COEF_DRAG_ASYMMETRIC = 0.0001; //denoted by C_D_delta_a
+    const double C_l_delta_a = 0.0021; //denoted by C_l_delta_a
+    const double C_n_delta_a = 0.004; //denoted by C_n_delta_a
+
+    const double COEF_LIFT_SYMMETRIC = 0.21/1;//denoted by C_L_delta_s
+    const double COEF_DRAG_SYMMETRIC = 0.3/1;//denoted by C_D_delta_s
+
+    arma::vec brake_angles = arma::colvec({0, 0});
+
     void update(const arma::vec& velocity, const arma::vec& ang_velocity, const arma::vec& euler_angle);
 
     PState state;
-
-    Aileron aileron;
-
 public:
 
     Parafoil() { }
 
     void set_brake_angles(const arma::vec& angles);
     arma::vec get_brake_angles() const;
+    arma::vec get_control() const;
 
     PState get_state() const;
 
@@ -75,9 +82,6 @@ public:
 
     arma::vec get_displacement()const;
 
-    arma::vec get_aileron_liftforce(const arma::vec& velocity, const arma::vec& ang_velocity, const arma::vec& euler_angles) const;
-    arma::vec get_aileron_dragforce(const arma::vec& velocity, const arma::vec& ang_velocity, const arma::vec& euler_angles) const;
-
     arma::vec get_aeroliftforce(const arma::vec& velocity, const arma::vec& ang_velocity, const arma::vec& euler_angles) const;
     arma::vec get_aerodragforce(const arma::vec& velocity, const arma::vec& ang_velocity, const arma::vec& euler_angles) const;
 
@@ -85,6 +89,7 @@ public:
     arma::vec get_weight_force(const arma::vec& euler_angles) const;
     arma::vec get_force(const arma::vec& velocity, const arma::vec& ang_velocity, const arma::vec& euler_angles);
 
+    arma::vec get_aileron_force_momentum() const;
     arma::vec get_apperent_mass_momentum(const arma::vec& velocity, const arma::vec& ang_velocity, const arma::vec& euler_angles) const;
     arma::vec get_aerodynamic_momentum(const arma::vec& velocity, const arma::vec& ang_velocity, const arma::vec& euler_angles) const;
     arma::vec get_force_momentum(const arma::vec& velocity, const arma::vec& ang_velocity, const arma::vec& euler_angles);
