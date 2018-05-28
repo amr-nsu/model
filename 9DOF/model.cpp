@@ -4,8 +4,6 @@ using namespace arma;
 
 std::ostream& operator << (std::ostream& os, const State& state)
 {
-    //vec velocity = def::coord_rotational_matrix(state.euler_angles)*state.linear_velocity;
-
     os << state.timestamp << " "
        << state.angular_vel_parafoil(0) << " "
        << state.angular_vel_parafoil(1) << " "
@@ -63,14 +61,13 @@ void Model::update()
 
     State tmp(state);
 
-    vec a = zeros(21,1);
+    vec a = zeros(18,1);
     a.rows(0,2) = state.linear_velocity;
     a.rows(3,5) = state.angular_vel_parafoil;
     a.rows(6,8) = state.angular_vel_fuselage;
-    a.rows(9,11) = state.react_force;
-    a.rows(12,14) = state.euler_angles_fuselage;
-    a.rows(15,17) = state.euler_angles_parafoil;
-    a.rows(18,20) = state.coordinates;
+    a.rows(9,11) = state.euler_angles_fuselage;
+    a.rows(12,14) = state.euler_angles_parafoil;
+    a.rows(15,17) = state.coordinates;
 
     vec n = rungeKuttaMethod(a);
     //vec n = eulerMethod(a);
@@ -78,10 +75,9 @@ void Model::update()
     tmp.linear_velocity = n.rows(0,2);
     tmp.angular_vel_parafoil = n.rows(3,5);
     tmp.angular_vel_fuselage = n.rows(6,8);
-    tmp.react_force = n.rows(9,11);
-    tmp.euler_angles_fuselage = n.rows(12,14);
-    tmp.euler_angles_parafoil = n.rows(15,17);
-    tmp.coordinates = n.rows(18,20);
+    tmp.euler_angles_fuselage = n.rows(9,11);
+    tmp.euler_angles_parafoil = n.rows(12,14);
+    tmp.coordinates = n.rows(15,17);
     tmp.timestamp = state.timestamp + state.time_step;
 
     state = tmp;
@@ -108,22 +104,9 @@ vec Model::calculate_F(const vec& n)
     vec velocity = n.rows(0,2);
     vec angular_vel_parafoil = n.rows(3,5);
     vec angular_vel_fuselage = n.rows(6,8);
-    vec react_force = n.rows(9,11);
-    vec euler_angles_fuselage = n.rows(12,14);
-    vec euler_angles_parafoil = n.rows(15,17);
-    vec coordinates = n.rows(18,20);
-
-//    State tmp(state);
-//    tmp.linear_velocity = velocity;
-//    tmp.angular_vel_fuselage = angular_vel_fuselage;
-//    tmp.angular_vel_parafoil = angular_vel_parafoil;
-//    tmp.react_force = react_force;
-//    tmp.euler_angles_fuselage = euler_angles_fuselage;
-//    tmp.euler_angles_parafoil = euler_angles_parafoil;
-//    tmp.coordinates = coordinates;
-//    if(tmp.fuel > 0)
-//        algorithm(fuselage, parafoil, tmp);
-
+    vec euler_angles_fuselage = n.rows(9,11);
+    vec euler_angles_parafoil = n.rows(12,14);
+    vec coordinates = n.rows(15,17);
 
     mat A = zeros(12,12);
     vec M = zeros(12,1);
@@ -172,15 +155,12 @@ vec Model::calculate_F(const vec& n)
     A.rows(9,11).cols(6,8) = fuselage.get_inertia();
     A.rows(9,11).cols(9,11) = - def::skew_matrix(fuselage.get_displacement()) * def::coord_rotational_matrix(euler_angles_fuselage);
 
-    vec F = zeros(21,1);
+    vec F = zeros(18,1);
 
-    F.rows(0, 11) = inv(A)*M;
-    F.rows(12,14) = def::angular_velocity_rotational_matrix(euler_angles_fuselage) * angular_vel_fuselage;
-    F.rows(15,17) = def::angular_velocity_rotational_matrix(euler_angles_parafoil) * angular_vel_parafoil;
-    F.rows(18,20) = velocity;
-
-
-//F.rows(0, 5).print(std::cout);
+    F.rows(0, 8) = ((vec)(inv(A)*M)).rows(0, 8);
+    F.rows(9,11) = def::angular_velocity_rotational_matrix(euler_angles_fuselage) * angular_vel_fuselage;
+    F.rows(12,14) = def::angular_velocity_rotational_matrix(euler_angles_parafoil) * angular_vel_parafoil;
+    F.rows(15,17) = velocity;
 
     return std::move(F);
 }

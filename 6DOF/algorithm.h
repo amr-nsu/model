@@ -69,17 +69,17 @@ void algorithm_minization_fuel_consumption(Fuselage& fuselage, Parafoil& parafoi
 
     parafoil.set_brake_angles(arma::colvec({ailerons, ailerons}));
 
-    //double lift = parafoil.get_state().coef_lift;
-    //double drag = parafoil.get_state().coef_drag;
+    double lift = parafoil.get_state().coef_lift;
+    double drag = parafoil.get_state().coef_drag;
 
-    double lift = norm(
-                parafoil.get_aeroliftforce(state.linear_velocity, state.angular_vel)
-                + parafoil.get_aileron_liftforce(state.linear_velocity, state.angular_vel)
-                );
-    double drag = norm(
-                parafoil.get_aerodragforce(state.linear_velocity, state.angular_vel)
-                + parafoil.get_aileron_dragforce(state.linear_velocity, state.angular_vel)
-                );
+//    double lift = norm(
+//                parafoil.get_aeroliftforce(state.linear_velocity, state.angular_vel)
+//                + parafoil.get_aileron_liftforce(state.linear_velocity, state.angular_vel)
+//                );
+//    double drag = norm(
+//                parafoil.get_aerodragforce(state.linear_velocity, state.angular_vel)
+//                + parafoil.get_aileron_dragforce(state.linear_velocity, state.angular_vel)
+//                );
 
     double n_output = 0;// = lift/drag ? drag != 0 : 0;
     if(drag != 0)

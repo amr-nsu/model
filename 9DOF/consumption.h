@@ -22,12 +22,15 @@ namespace con
 
     void theoretical_consuption(Fuselage& fuselage, Parafoil& parafoil, State& state)
     {
-        double coef = 0.01;
+        double coef = 0.002;
         double weight = arma::norm(fuselage.get_weight_force(state.euler_angles_fuselage)
                                    + parafoil.get_weight_force(state.euler_angles_parafoil));
 
-        double lift = parafoil.get_state().coef_lift;
-        double drag = parafoil.get_state().coef_drag;
+//        double lift = parafoil.get_state().coef_lift;
+//        double drag = parafoil.get_state().coef_drag;
+
+        double lift = parafoil.get_state().coef_lift - 0.21 * parafoil.get_state().delta_s;
+        double drag = parafoil.get_state().coef_drag  - 0.3/2 * parafoil.get_state().delta_s;
 
         double func = lift/drag;
 

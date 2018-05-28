@@ -57,8 +57,8 @@ class Parafoil
     const double C_l_delta_a = 0.0021; //denoted by C_l_delta_a
     const double C_n_delta_a = 0.004; //denoted by C_n_delta_a
 
-    const double COEF_LIFT_SYMMETRIC = 0.21/1;//denoted by C_L_delta_s
-    const double COEF_DRAG_SYMMETRIC = 0.3/1;//denoted by C_D_delta_s
+    const double COEF_LIFT_SYMMETRIC = 0.21;//denoted by C_L_delta_s
+    const double COEF_DRAG_SYMMETRIC = 0.3/2;//denoted by C_D_delta_s
 
     arma::vec brake_angles = arma::colvec({0, 0});
 

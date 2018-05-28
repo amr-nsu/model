@@ -13,13 +13,12 @@ int main()
     model.set_linear_velocity(arma::colvec({2,0,0}));
 
     //model(con::linear_thrust_depended_consuption);
-    model(con::no_consuption);
+    model(con::theoretical_consuption);
 
 
     ofstream file("data_test_14");
-    //ofstream file("data_k");
 
-    model[alg::algorithm_gliding];
+    //model[alg::algorithm_gliding];
 
     model[alg::algorithm_keeping_heigth];
 
@@ -27,7 +26,7 @@ int main()
 
     model[alg::algorithm_minization_fuel_consumption];
 
-    model(file, 150);
+    model(file, 350);
 
 
 }

@@ -29,11 +29,17 @@ void Parafoil::update(const vec& velocity, const vec& ang_velocity, const vec& e
     state.delta_s = get_control()(1);
 
     state.angle_of_attack = get_angle_of_attack(para_velocity);
-    state.coef_lift = COEF_LIFT_BASE + COEF_LIFT_ALPHA * state.angle_of_attack + state.delta_s *COEF_LIFT_SYMMETRIC
-            + state.delta_a * COEF_LIFT_ASYMMETRIC;
+
+    state.coef_lift = COEF_LIFT_BASE + COEF_LIFT_ALPHA * state.angle_of_attack + state.delta_s *COEF_LIFT_SYMMETRIC;
     state.coef_drag = COEF_DRAG_BASE + COEF_DRAG_ALPHA * state.angle_of_attack
             + COEF_DRAG_ALPHA_2 * state.angle_of_attack * state.angle_of_attack
-            + state.delta_s*COEF_DRAG_SYMMETRIC + state.delta_a*COEF_DRAG_ASYMMETRIC;
+            + state.delta_s*COEF_DRAG_SYMMETRIC;
+
+//    double beta = 0.51/(3.14*2.7);
+
+//    state.coef_lift = 0.4 + 2 * state.angle_of_attack + 0.21*state.delta_s;
+//    state.coef_drag = 0.15 + beta* state.coef_lift*state.coef_lift;
+
 
     state.air_pressure = 0.5 * AIR_DENSITY * AREA * para_velocity_norm * para_velocity_norm;
 

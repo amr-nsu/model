@@ -47,7 +47,7 @@ vec Fuselage::get_aeroforce(const vec& velocity, const vec& ang_velocity, const 
     vec fuse_velocity = get_linear_velocity(velocity, ang_velocity, TRANS_FUSE_BODY_VECTOR, euler_angles);
 
     double angle_of_attack = get_angle_of_attack(fuse_velocity);
-    double coef_drag = COEF_DRAG_BASE + COEF_DRAG_ALPHA * angle_of_attack * angle_of_attack;
+    double coef_drag = COEF_DRAG_BASE;
 
     double fuse_velocity_norm = norm(fuse_velocity);
 

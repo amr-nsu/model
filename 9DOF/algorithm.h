@@ -4,9 +4,6 @@
 #include "def/def.h"
 #include "model.h"
 
-//typedef void (*func)(Fuselage& fuselage, Parafoil& parafoil);
-
-
 ///note алгоритмы управления
 
 namespace  alg
@@ -56,20 +53,22 @@ void algorithm_minization_fuel_consumption(Fuselage& fuselage, Parafoil& parafoi
 
     double coef = 2;
 
-    double maxAngle = M_PI/3;
+    double maxAngle = 1;
 
     if(base > maxAngle/coef-amplitude) base = maxAngle/coef-amplitude;
     if(amplitude > base) base = amplitude;
 
     double ailerons = coef*(base + signal);
 
-    if(ailerons>maxAngle) ailerons = maxAngle;
+//    if(ailerons>maxAngle) ailerons = maxAngle;
 
     parafoil.set_brake_angles(arma::colvec({ailerons, ailerons}));
 
     double lift = parafoil.get_state().coef_lift - 0.21 * parafoil.get_state().delta_s;
-    double drag = parafoil.get_state().coef_drag  - 0.3 * parafoil.get_state().delta_s;
+    double drag = parafoil.get_state().coef_drag  - 0.3/2 * parafoil.get_state().delta_s;
 
+//    double lift = parafoil.get_state().coef_lift;
+//    double drag = parafoil.get_state().coef_drag;
 
     double n_output = 0;
     if(drag != 0)
@@ -78,10 +77,7 @@ void algorithm_minization_fuel_consumption(Fuselage& fuselage, Parafoil& parafoi
     double T_f = 0.9;
     mean += state.time_step/T_f * (n_output * signal - mean);
 
-    base += 10000. * mean  * state.time_step;
-
-   // std::cout << ailerons << std::endl;
-
+    base += 200. * mean  * state.time_step;
 
 }
 
